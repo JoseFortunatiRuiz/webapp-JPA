@@ -1,5 +1,9 @@
 package org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.dao;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Region;
 import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Supermarket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,17 +13,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@Transactional
 public class SupermarketDAOImpl implements SupermarketDAO {
 
     // Logger para registrar eventos importantes en el DAO
     private static final Logger logger = LoggerFactory.getLogger(SupermarketDAOImpl.class);
 
-    private final JdbcTemplate jdbcTemplate;
-
-    // Inyección de JdbcTemplate
-    public SupermarketDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /**
      * Lista todos los supermercados de la base de datos.
@@ -28,8 +29,8 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public List<Supermarket> listAllSupermarkets() {
         logger.info("Listing all supermarkets from the database.");
-        String sql = "SELECT * FROM supermarkets";
-        List<Supermarket> supermarkets = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Supermarket.class));
+        String query = "SELECT s FROM Supermarket s";
+        List<Supermarket> supermarkets = entityManager.createQuery(query, Supermarket.class).getResultList();
         logger.info("Retrieved {} supermarkets from the database.", supermarkets.size());
         return supermarkets;
     }
@@ -41,9 +42,8 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public void insertSupermarket(Supermarket supermarket) {
         logger.info("Inserting supermarket with name: {}", supermarket.getName());
-        String sql = "INSERT INTO supermarkets (name) VALUES (?)";
-        int rowsAffected = jdbcTemplate.update(sql, supermarket.getName());
-        logger.info("Inserted supermarket. Rows affected: {}", rowsAffected);
+        entityManager.persist(supermarket);
+        logger.info("Inserted supermarket. Rows affected: {}", supermarket.getId());
     }
 
     /**
@@ -53,9 +53,8 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public void updateSupermarket(Supermarket supermarket) {
         logger.info("Updating supermarket with id: {}", supermarket.getId());
-        String sql = "UPDATE supermarkets SET name = ? WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, supermarket.getName(), supermarket.getId());
-        logger.info("Updated supermarket. Rows affected: {}", rowsAffected);
+        entityManager.merge(supermarket);
+        logger.info("Updated supermarket. Rows affected: {}", supermarket.getId());
     }
 
     /**
@@ -65,9 +64,13 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public void deleteSupermarket(int id) {
         logger.info("Deleting supermarket with id: {}", id);
-        String sql = "DELETE FROM supermarkets WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
-        logger.info("Deleted supermarket. Rows affected: {}", rowsAffected);
+        Supermarket supermarket = entityManager.find(Supermarket.class, id);
+        if (supermarket != null) {
+            entityManager.remove(supermarket);
+            logger.info("Deleted supermarket with id: {}", id);
+        } else {
+            logger.warn("Supermarket with id: {} not found.", id);
+        }
     }
 
     /**
@@ -78,15 +81,13 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public Supermarket getSupermarketById(int id) {
         logger.info("Retrieving supermarket by id: {}", id);
-        String sql = "SELECT * FROM supermarkets WHERE id = ?";
-        try {
-            Supermarket supermarket = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Supermarket.class), id);
+        Supermarket supermarket = entityManager.find(Supermarket.class, id);
+        if (supermarket != null){
             logger.info("Supermarket retrieved: {}", supermarket.getName());
-            return supermarket;
-        } catch (Exception e) {
-            logger.warn("No supermarket found with id: {}", id);
-            return null;
+        }else{
+            logger.warn("No region found with id: {}", id);
         }
+        return supermarket;
     }
 
     /**
@@ -97,8 +98,10 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public boolean existsSupermarketByName(String name) {
         logger.info("Checking if supermarket with name: {} exists", name);
-        String sql = "SELECT COUNT(*) FROM supermarkets WHERE UPPER(name) = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, name.toUpperCase());
+        String query = "SELECT COUNT(s) FROM Supermarket s WHERE UPPER(s.name) = :name";
+        Long count = entityManager.createQuery(query, Long.class)
+                .setParameter("name", name.toUpperCase())
+                .getSingleResult();
         boolean exists = count != null && count > 0;
         logger.info("Supermarket with name: {} exists: {}", name, exists);
         return exists;
@@ -115,8 +118,11 @@ public class SupermarketDAOImpl implements SupermarketDAO {
     @Override
     public boolean existsSupermarketByNameAndNotId(String name, int id) {
         logger.info("Checking if supermarket with name: {} exists excluding id: {}", name, id);
-        String sql = "SELECT COUNT(*) FROM supermarkets WHERE UPPER(name) = ? AND id != ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, name.toUpperCase(), id);
+        String query = "SELECT COUNT(s) FROM Supermarket s WHERE UPPER(s.name) = :name AND s.id != :id";
+        Long count = entityManager.createQuery(query, Long.class)
+                .setParameter("name", name.toUpperCase())
+                .setParameter("id", id)
+                .getSingleResult();
         boolean exists = count != null && count > 0;
         logger.info("Supermarket with name: {} exists excluding id {}: {}", name, id, exists);
         return exists;

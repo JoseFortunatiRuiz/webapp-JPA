@@ -15,10 +15,8 @@ import java.util.List;
 @Transactional
 public class RegionDAOImpl implements RegionDAO {
 
-
     // Logger para registrar eventos importantes en el DAO
     private static final Logger logger = LoggerFactory.getLogger(RegionDAOImpl.class);
-
 
     @PersistenceContext
     private EntityManager entityManager;
