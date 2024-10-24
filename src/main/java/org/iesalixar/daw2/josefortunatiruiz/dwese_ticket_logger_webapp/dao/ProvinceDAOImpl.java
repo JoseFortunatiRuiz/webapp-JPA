@@ -116,8 +116,6 @@ public class ProvinceDAOImpl implements ProvinceDAO {
         logger.info("Province with code: {} exists: {}", code, exists);
         return exists;
     }
-
-
     /**
      * Verifica si una provincia con el código especificado ya existe en la base de datos,
      * excluyendo una provincia con un ID específico.

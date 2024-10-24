@@ -1,15 +1,10 @@
 package org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.dao;
 
-
-import java.sql.SQLException;
 import java.util.List;
 import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Province;
 
 
 public interface ProvinceDAO {
-
-
-
 
     List<Province> listAllProvinces() ;
 

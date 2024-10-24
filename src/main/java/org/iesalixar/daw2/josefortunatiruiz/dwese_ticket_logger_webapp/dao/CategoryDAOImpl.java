@@ -104,7 +104,6 @@ public class CategoryDAOImpl implements CategoryDAO {
         logger.info("Category with name: {} exists: {}", name, exists);
         return exists;
     }
-
     /**
      * Verifica si una categoría con el nombre especificado ya existe en la base de datos,
      * excluyendo una categoría con un ID específico.

@@ -7,17 +7,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface CategoryDAO {
-    List<Category> listAllCategories() throws SQLException;
+    List<Category> listAllCategories() ;
 
-    void insertCategory(Category category) throws SQLException;
+    void insertCategory(Category category);
 
-    void updateCategory(Category category) throws SQLException;
+    void updateCategory(Category category);
 
-    void deleteCategory(int id) throws SQLException, DataIntegrityViolationException;
+    void deleteCategory(int id) throws DataIntegrityViolationException;
 
-    Category getCategoryById(int id) throws SQLException;
+    Category getCategoryById(int id);
 
-    boolean existsCategoryByName(String name) throws SQLException;
+    boolean existsCategoryByName(String name);
 
-    boolean existsCategoryByNameAndNotId(String name, int id) throws SQLException;
+    boolean existsCategoryByNameAndNotId(String name, int id);
 }

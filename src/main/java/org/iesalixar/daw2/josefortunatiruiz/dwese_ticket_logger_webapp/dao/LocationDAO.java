@@ -2,20 +2,18 @@ package org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.dao;
 
 import jakarta.validation.Valid;
 import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Location;
-
-import java.sql.SQLException;
 import java.util.List;
 
 public interface LocationDAO {
-    List<Location> listAllLocations() throws SQLException;
+    List<Location> listAllLocations();
 
-    void insertLocation(@Valid Location location) throws SQLException;
+    void insertLocation(@Valid Location location);
 
-    Location getLocationById(int id) throws SQLException;
+    Location getLocationById(int id);
 
-    void updateLocation(@Valid Location location) throws SQLException;
+    void updateLocation(@Valid Location location);
 
-    void deleteLocation(int id) throws SQLException;
+    void deleteLocation(int id);
 
     boolean existsLocationByCode(String code);
 
