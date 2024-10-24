@@ -21,7 +21,7 @@ INSERT IGNORE INTO regions (code, name) VALUES
 
 
 -- Insertar datos de las provincias españolas con los códigos correctos
-INSERT IGNORE INTO provinces (code, name, id_region) VALUES
+INSERT IGNORE INTO provinces (code, name, region_id) VALUES
 ('01', 'Araba/Álava', 16),
 ('02', 'Albacete', 8),
 ('03', 'Alicante/Alacant', 10),
