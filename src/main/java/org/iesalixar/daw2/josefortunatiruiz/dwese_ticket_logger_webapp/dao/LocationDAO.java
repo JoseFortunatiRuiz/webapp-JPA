@@ -15,7 +15,7 @@ public interface LocationDAO {
 
     void deleteLocation(int id);
 
-    boolean existsLocationByCode(String code);
+    boolean existsLocationByAddress(String address);
 
-    boolean existsLocationByCodeAndNotId(String code, int id);
+    boolean existsLocationByAddressAndNotId(String address, int id);
 }

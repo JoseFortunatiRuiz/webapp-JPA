@@ -1,13 +1,10 @@
 package org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.dao;
 
-
 import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Province;
 import org.iesalixar.daw2.josefortunatiruiz.dwese_ticket_logger_webapp.entity.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -17,8 +14,6 @@ import java.util.List;
 @Repository
 @Transactional
 public class ProvinceDAOImpl implements ProvinceDAO {
-
-
     // Logger para registrar eventos importantes en el DAO
     private static final Logger logger = LoggerFactory.getLogger(ProvinceDAOImpl.class);
 
